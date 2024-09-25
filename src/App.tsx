@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { TitleApp } from "./components/title-app";
 import { Button } from "./components/ui/button";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Input } from "./components/ui/input";
 import {
   Select,
@@ -19,12 +19,12 @@ import {
 import { measures } from "./data/measures";
 import { categories } from "./data/categories";
 import { Product } from "./types/product";
-import { products } from "./data/products";
 import { NoProduct } from "./components/no-product";
 
 function App() {
+  const dataLocalStorage = JSON.parse(localStorage.getItem("PRODUCTS") || "[]");
   const [showModalNewProduct, setShowModalNewProduct] = useState(false);
-  const [productsList, setProductsList] = useState<Product[]>(products);
+  const [productsList, setProductsList] = useState<Product[]>(dataLocalStorage);
 
   const [nameProduct, setNameProduct] = useState("");
   const [idProduct, setIdProduct] = useState("");
@@ -127,7 +127,7 @@ function App() {
 
   // salva o item editado
   const editProduct = () => {
-    const product = products.find((product) => product.id === idProduct);
+    const product = productsList.find((product) => product.id === idProduct);
     if (product) {
       product.name = nameProduct;
       product.quantity = quantity;
@@ -140,8 +140,15 @@ function App() {
     clearFields();
   };
 
+  // gerencia alterações no localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("PRODUCTS", JSON.stringify(productsList));
+    }
+  }, [productsList]);
+
   return (
-    <section className="flex-1 border px-2 relative">
+    <section className="flex-1 px-2 relative">
       <div className="mt-4">
         <TitleApp title={"Lista de"} subtitle={"Compras"} />
       </div>
@@ -226,7 +233,7 @@ function App() {
 
       {/* botão adicionar produto */}
       {productsList.length > 0 && (
-        <div className="absolute bottom-2 right-2 bg-red-600">
+        <div className="absolute bottom-2 right-2">
           <Button
             size={"sm"}
             className="text-background"
