@@ -20,6 +20,7 @@ import { measures } from "./data/measures";
 import { categories } from "./data/categories";
 import { Product } from "./types/product";
 import { products } from "./data/products";
+import { NoProduct } from "./components/no-product";
 
 function App() {
   const [showModalNewProduct, setShowModalNewProduct] = useState(false);
@@ -144,8 +145,16 @@ function App() {
       <div className="mt-4">
         <TitleApp title={"Lista de"} subtitle={"Compras"} />
       </div>
+
       {/* lista de produtos */}
       <div className="my-4 h-[calc(100vh-14rem)] overflow-auto [&::-webkit-scrollbar]:hidden">
+        {/* modal Quantidade de produtos === 0 */}
+        {productsList.length === 0 && (
+          <div className="flex items-center justify-center">
+            <NoProduct onClick={openModalProduct} />
+          </div>
+        )}
+
         <ul className="flex flex-col gap-4">
           {productsList
             .sort((a: Product, b: Product): 1 | -1 => {
@@ -214,21 +223,27 @@ function App() {
             ))}
         </ul>
       </div>
-      <div className="absolute bottom-2 right-2">
-        <Button
-          size={"sm"}
-          className="text-background"
-          onClick={openModalProduct}
-        >
-          <PlusIcon size={18} strokeWidth={2} className="text-background" />
-          <span className="hidden md:flex">Novo</span>
-        </Button>
-      </div>
+
+      {/* botão adicionar produto */}
+      {productsList.length > 0 && (
+        <div className="absolute bottom-2 right-2 bg-red-600">
+          <Button
+            size={"sm"}
+            className="text-background"
+            onClick={openModalProduct}
+          >
+            <PlusIcon size={18} strokeWidth={2} className="text-background" />
+            <span className="hidden md:flex">Novo</span>
+          </Button>
+        </div>
+      )}
+
+      {/* modal form adicionar produto */}
       {showModalNewProduct && (
         <div className="absolute w-screen h-screen left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/45 flex items-center justify-center">
           <div className="bg-muted p-4 rounded-md w-11/12 md:w-1/2 mx-auto">
             <h2 className="text-center text-lg uppercase font-semibold bg-primary text-secondary py-2 rounded-md">
-            {editButton ? "Editar Produto" : "Adicionar Produto"}
+              {editButton ? "Editar Produto" : "Adicionar Produto"}
             </h2>
             <div className="my-4">
               <div>
