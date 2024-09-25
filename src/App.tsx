@@ -69,6 +69,26 @@ function App() {
     }
   };
 
+  // marca item como no carrinho
+  const productCart = (id: string) => {
+    setProductsList(
+      productsList
+        .map((product) =>
+          product.id === id
+            ? { ...product, isChecked: !product.isChecked }
+            : product
+        )
+        .sort((a: Product, b: Product): 1 | -1 => {
+          if (a.isChecked < b.isChecked) {
+            return -1;
+          } else {
+            return 1;
+          }
+        })
+    );
+    setShowModalNewProduct(false);
+  };
+
   //abre o modal para salvar um novo produto
   const openModalNewProduct = () => {
     setShowModalNewProduct(true);
