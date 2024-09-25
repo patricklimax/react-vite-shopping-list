@@ -89,6 +89,12 @@ function App() {
     setShowModalNewProduct(false);
   };
 
+  //remove um produto da lista
+  const removeProduct = (id: string) => {
+    setProductsList(productsList.filter((product) => product.id !== id));
+    setShowModalNewProduct(false);
+  };
+
   //abre o modal para salvar um novo produto
   const openModalNewProduct = () => {
     setShowModalNewProduct(true);
@@ -141,7 +147,11 @@ function App() {
                 <Button size={"icon"} className="text-yellow-400">
                   <FilePenIcon />
                 </Button>
-                <Button size={"icon"} className="text-red-400">
+                <Button
+                  size={"icon"}
+                  className="text-red-400"
+                  onClick={() => removeProduct(product.id)}
+                >
                   <Trash2Icon />
                 </Button>
               </div>
