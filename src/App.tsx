@@ -27,15 +27,17 @@ function App() {
 
   const [nameProduct, setNameProduct] = useState("");
   const [idProduct, setIdProduct] = useState("");
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState("");
   const [measure, setMeasure] = useState("");
   const [category, setCategory] = useState("");
+
+  const [editButton, setEditButton] = useState(false);
 
   // limpa inputs
   const clearFields = () => {
     setNameProduct("");
     setIdProduct("");
-    setQuantity(0);
+    setQuantity("");
     setMeasure("");
     setCategory("");
   };
@@ -66,6 +68,7 @@ function App() {
         })
       );
       clearFields();
+      setShowModalNewProduct(false);
     }
   };
 
@@ -96,13 +99,44 @@ function App() {
   };
 
   //abre o modal para salvar um novo produto
-  const openModalNewProduct = () => {
+  const openModalProduct = () => {
     setShowModalNewProduct(true);
+    setEditButton(false);
   };
 
   // fecha o modal
   const closeModalProduct = () => {
-    setShowModalNewProduct(!showModalNewProduct);
+    setShowModalNewProduct(false);
+    clearFields();
+  };
+
+  //abrir modal de edição
+  const openModalEdit = (id: string) => {
+    setShowModalNewProduct(true);
+    const product = productsList.find((product) => product.id === id);
+    if (product) {
+      setNameProduct(product.name);
+      setIdProduct(product.id);
+      setQuantity(product.quantity);
+      setMeasure(product.measure);
+      setCategory(product.category);
+      setEditButton(true);
+    }
+  };
+
+  // salva o item editado
+  const editProduct = () => {
+    const product = products.find((product) => product.id === idProduct);
+    if (product) {
+      product.name = nameProduct;
+      product.quantity = quantity;
+      product.measure = measure;
+      product.category = category;
+      setEditButton(false);
+      setShowModalNewProduct(false);
+    }
+    setProductsList([...productsList]);
+    clearFields();
   };
 
   return (
@@ -110,70 +144,91 @@ function App() {
       <div className="mt-4">
         <TitleApp title={"Lista de"} subtitle={"Compras"} />
       </div>
+      {/* lista de produtos */}
       <div className="my-4 h-[calc(100vh-14rem)] overflow-auto [&::-webkit-scrollbar]:hidden">
         <ul className="flex flex-col gap-4">
-          {productsList.map((product) => (
-            <li
-              key={product.id}
-              className="border p-2 flex items-center justify-between gap-2"
-            >
-              <div>
-                {product.isChecked ? (
-                  <Button
-                    size={"icon"}
-                    className="text-emerald-600"
-                    onClick={() => productCart(product.id)}
-                  >
-                    <CheckIcon />
-                  </Button>
-                ) : (
-                  <Button
-                    size={"icon"}
-                    className="text-emerald-600"
-                    onClick={() => productCart(product.id)}
-                  >
-                    <SquareIcon />
-                  </Button>
-                )}
-              </div>
-              <div className="flex-1">
-                <div>{product.name}</div>
-                <div className="text-sm -mt-1 text-muted-foreground">
-                  {product.quantity}
+          {productsList
+            .sort((a: Product, b: Product): 1 | -1 => {
+              if (a.isChecked < b.isChecked) {
+                return -1;
+              } else {
+                return 1;
+              }
+            })
+            .map((product) => (
+              <li
+                key={product.id}
+                className="border p-2 flex items-center justify-between gap-2"
+              >
+                <div>
+                  {product.isChecked ? (
+                    <Button
+                      size={"icon"}
+                      className="text-emerald-600"
+                      onClick={() => productCart(product.id)}
+                    >
+                      <CheckIcon />
+                    </Button>
+                  ) : (
+                    <Button
+                      size={"icon"}
+                      className="text-emerald-600"
+                      onClick={() => productCart(product.id)}
+                    >
+                      <SquareIcon />
+                    </Button>
+                  )}
                 </div>
-              </div>
-              <div>{product.category}</div>
-              <div className="flex items-center gap-4 pl-4">
-                <Button size={"icon"} className="text-yellow-400">
-                  <FilePenIcon />
-                </Button>
-                <Button
-                  size={"icon"}
-                  className="text-red-400"
-                  onClick={() => removeProduct(product.id)}
-                >
-                  <Trash2Icon />
-                </Button>
-              </div>
-            </li>
-          ))}
+                <div className="flex-1">
+                  <div
+                    className={[
+                      product.isChecked
+                        ? "line-through text-muted-foreground"
+                        : "",
+                    ].join(" ")}
+                  >
+                    {product.name}
+                  </div>
+                  <div className="text-sm -mt-1 text-muted-foreground">
+                    {product.quantity} - {product.measure}(s)
+                  </div>
+                </div>
+                <div>{product.category}</div>
+                <div className="flex items-center gap-4 pl-4">
+                  <Button
+                    size={"icon"}
+                    className="text-yellow-400"
+                    onClick={() => openModalEdit(product.id)}
+                  >
+                    <FilePenIcon />
+                  </Button>
+                  <Button
+                    size={"icon"}
+                    className="text-red-400"
+                    onClick={() => removeProduct(product.id)}
+                  >
+                    <Trash2Icon />
+                  </Button>
+                </div>
+              </li>
+            ))}
         </ul>
       </div>
       <div className="absolute bottom-2 right-2">
         <Button
           size={"sm"}
           className="text-background"
-          onClick={openModalNewProduct}
+          onClick={openModalProduct}
         >
           <PlusIcon size={18} strokeWidth={2} className="text-background" />
           <span className="hidden md:flex">Novo</span>
         </Button>
       </div>
-      <div className="mt-4 absolute bottom-2  w-full">
-        {showModalNewProduct && (
-          <div className="bg-muted p-4 rounded-md">
+      {showModalNewProduct && (
+        <div className="absolute w-screen h-screen left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/45 flex items-center justify-center">
+          <div className="bg-muted p-4 rounded-md w-11/12 md:w-1/2 mx-auto">
             <h2 className="text-center text-lg uppercase font-semibold bg-primary text-secondary py-2 rounded-md">
-              Salvar Produto
+            {editButton ? "Editar Produto" : "Adicionar Produto"}
             </h2>
             <div className="my-4">
               <div>
@@ -184,20 +239,21 @@ function App() {
                   placeholder="O que você deseja comprar..."
                   value={nameProduct}
                   onChange={(e) => setNameProduct(e.target.value)}
+                  className="outline-none ring-none"
                 />
               </div>
 
-              <div>
+              <div className="mt-2">
                 <Input
                   required
                   id="quantity"
                   type="number"
                   placeholder="Qde"
                   value={quantity}
-                  onChange={(e) => setQuantity(parseInt(e.target.value))}
+                  onChange={(e) => setQuantity(e.target.value)}
                 />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mt-2">
                 <Select
                   name="measure"
                   defaultValue={measure}
@@ -239,14 +295,21 @@ function App() {
                 >
                   Cancelar
                 </Button>
-                <Button className="flex-1" onClick={saveNewProduct}>
-                  Salvar
-                </Button>
+
+                {editButton ? (
+                  <Button className="flex-1" onClick={editProduct}>
+                    Editar
+                  </Button>
+                ) : (
+                  <Button className="flex-1" onClick={saveNewProduct}>
+                    Salvar
+                  </Button>
+                )}
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }
