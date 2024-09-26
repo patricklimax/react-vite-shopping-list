@@ -148,21 +148,36 @@ function App() {
   }, [productsList]);
 
   return (
-    <section className="flex-1 px-2 relative">
+    <section className="flex-1 relative">
       <div className="mt-4">
         <TitleApp title={"Lista de"} subtitle={"Compras"} />
       </div>
 
       {/* lista de produtos */}
-      <div className="my-4 h-[calc(100vh-14rem)] overflow-auto [&::-webkit-scrollbar]:hidden">
+      <div className="mt-2 h-[calc(100vh-12.5rem)] overflow-auto [&::-webkit-scrollbar]:hidden flex flex-col">
         {/* modal Quantidade de produtos === 0 */}
-        {productsList.length === 0 && (
-          <div className="flex items-center justify-center">
-            <NoProduct onClick={openModalProduct} />
+        {productsList.length === 0 && <NoProduct onClick={openModalProduct} />}
+        {productsList.length > 0 && (
+          <div className="h-8 flex items-center justify-between bg-border px-2 rounded-md mx-4">
+            <div className="flex items-center gap-1 text-sm font-medium">
+              <span>Produtos na Lista</span>
+              <span className="text-xs h-5 w-5 bg-card-foreground rounded-full text-card flex items-center justify-center">
+                {productsList.length}
+              </span>
+            </div>
+            <div className="flex items-center gap-1 text-sm font-medium">
+              <span>Produtos no Carrinho</span>
+              <span className="text-xs h-5 w-fit px-2 bg-card-foreground rounded-full text-card flex items-center justify-center">
+                {
+                  productsList.filter((product) => product.isChecked === true)
+                    .length
+                }{" "}
+                de {productsList.length}
+              </span>
+            </div>
           </div>
         )}
-
-        <ul className="flex flex-col gap-4">
+        <ul className="flex flex-col mt-2">
           {productsList
             .sort((a: Product, b: Product): 1 | -1 => {
               if (a.isChecked < b.isChecked) {
@@ -174,7 +189,7 @@ function App() {
             .map((product) => (
               <li
                 key={product.id}
-                className="border p-2 flex items-center justify-between gap-2"
+                className="border-b p-2 flex items-center justify-between gap-2 mx-2"
               >
                 <div>
                   {product.isChecked ? (
