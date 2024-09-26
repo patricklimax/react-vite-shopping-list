@@ -20,6 +20,7 @@ import { measures } from "./data/measures";
 import { categories } from "./data/categories";
 import { Product } from "./types/product";
 import { NoProduct } from "./components/no-product";
+import { NotificationCart } from "./components/notification-cart";
 
 function App() {
   const dataLocalStorage = JSON.parse(localStorage.getItem("PRODUCTS") || "[]");
@@ -147,36 +148,31 @@ function App() {
     }
   }, [productsList]);
 
+  const qdeProductList = productsList.length;
+  const qdeProductCart = productsList.filter(
+    (product) => product.isChecked === true
+  ).length;
+
   return (
     <section className="flex-1 relative">
       <div className="mt-4">
         <TitleApp title={"Lista de"} subtitle={"Compras"} />
       </div>
 
+      <div className="mx-4 mt-2">
+        {productsList.length > 0 && (
+          <NotificationCart
+            qdeProducts={qdeProductList}
+            qdeProductsCart={qdeProductCart}
+          />
+        )}
+      </div>
+
       {/* lista de produtos */}
-      <div className="mt-2 h-[calc(100vh-12.5rem)] overflow-auto [&::-webkit-scrollbar]:hidden flex flex-col">
+      <div className="mt-2 h-[calc(100vh-14.5rem)] overflow-auto [&::-webkit-scrollbar]:hidden flex flex-col">
         {/* modal Quantidade de produtos === 0 */}
         {productsList.length === 0 && <NoProduct onClick={openModalProduct} />}
-        {productsList.length > 0 && (
-          <div className="h-8 flex items-center justify-between bg-border px-2 rounded-md mx-4">
-            <div className="flex items-center gap-1 text-sm font-medium">
-              <span>Produtos na Lista</span>
-              <span className="text-xs h-5 w-5 bg-card-foreground rounded-full text-card flex items-center justify-center">
-                {productsList.length}
-              </span>
-            </div>
-            <div className="flex items-center gap-1 text-sm font-medium">
-              <span>Produtos no Carrinho</span>
-              <span className="text-xs h-5 w-fit px-2 bg-card-foreground rounded-full text-card flex items-center justify-center">
-                {
-                  productsList.filter((product) => product.isChecked === true)
-                    .length
-                }{" "}
-                de {productsList.length}
-              </span>
-            </div>
-          </div>
-        )}
+
         <ul className="flex flex-col mt-2">
           {productsList
             .sort((a: Product, b: Product): 1 | -1 => {
@@ -270,7 +266,6 @@ function App() {
             <div className="my-4">
               <div>
                 <Input
-                  required
                   id="name"
                   type="text"
                   placeholder="O que você deseja comprar..."
@@ -282,7 +277,6 @@ function App() {
 
               <div className="mt-2">
                 <Input
-                  required
                   id="quantity"
                   type="number"
                   placeholder="Qde"
