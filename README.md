@@ -1,50 +1,22 @@
-# React + TypeScript + Vite
+# Lista de Compras
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Descrição
 
-Currently, two official plugins are available:
+O **Lista de Compras** é um projeto desenvolvido utilizando React com TypeScript, como parte de um sistema de gerenciamento de listas de compras. A aplicação permite aos usuários adicionar, editar, remover itens e marcar aqueles que já foram adicionados ao carrinho. O projeto foi construído com uma interface moderna e intuitiva, utilizando a biblioteca de componentes Shadcn UI e ícones do Lucide. O Vite foi utilizado como ferramenta de build para otimizar o desenvolvimento.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tecnologias
 
-## Expanding the ESLint configuration
+- **React**: Biblioteca JavaScript para construção de interfaces de usuário. <br>
+- **Vite**: Ferramenta de build rápida e leve para desenvolvimento com React.<br>
+- **Shadcn UI**: Biblioteca de componentes React para estilização de interfaces.<br>
+- **Lucide**: Pacote de ícones utilizados na aplicação para melhorar a experiência do usuário.<br>
+- **Tailwind CSS**: Framework de CSS utilitário para estilização rápida e responsiva.<br>
+- **TypeScript**: Superset do JavaScript que adiciona tipagem estática ao projeto.<br>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Funcionalidades
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- **Adicionar itens**: Permite adicionar novos produtos à lista de compras.<br>
+- **Editar itens**: Opção de editar os produtos já existentes na lista.<br>
+- **Remover itens**: Funcionalidade para excluir itens da lista de compras.<br>
+- **Marcar itens como comprados**: Opção de marcar produtos que já foram colocados no carrinho, diferenciando visualmente na interface.<br>
+- **Interface Responsiva**: A aplicação se adapta a diferentes tamanhos de tela, oferecendo uma experiência consistente em dispositivos móveis e desktop.
